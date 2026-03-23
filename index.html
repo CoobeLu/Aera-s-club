@@ -10,7 +10,8 @@
             --bg-color: #fcfcfd;
             --text-color: #444;
             --card-bg: #fff;
-            --header-bg: #1a1a1a; /* 深黑色背景，搭配你的白字 LOGO */
+            /* 修正 LOGO 背景色：設定為與圖片完全一致的黑色 */
+            --header-bg: #0e0e0e; 
         }
 
         html { overflow-y: scroll; }
@@ -23,20 +24,24 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- LOGO 區 --- */
+        /* --- LOGO 區 (已放大) --- */
         .header {
             width: 100%;
             background-color: var(--header-bg);
-            padding: 20px 0;
+            /* 縮減上下填充，讓放大後的 LOGO 看起來更平衡 */
+            padding: 10px 0; 
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* 加強陰影，更有質感 */
             position: sticky; top: 0; z-index: 100;
         }
 
         .logo-img {
-            height: 70px;
+            /* --- 核心修改：LOGO 放大 --- */
+            height: 110px; /* 原為 70px */
             width: auto;
             object-fit: contain;
+            display: block; /* 修正對齊問題 */
+            margin: 0 auto;
         }
 
         /* --- 關於我們 --- */
