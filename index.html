@@ -3,65 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的簡單網頁</title>
+    <title>陪玩挑選網頁</title>
     <style>
-        /* 這裡放 CSS，負責控制網頁長什麼樣子 */
+        /* --- 基礎設定 --- */
+        :root {
+            --primary-color: #ff6b6b; /* 主題色，例如粉紅/紅色 */
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --card-bg: #fff;
+        }
+
         body {
             font-family: "Microsoft JhengHei", Arial, sans-serif;
-            line-height: 1.6;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
         }
 
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        /* --- LOGO 區 --- */
+        .header {
+            width: 100%;
+            background-color: var(--card-bg);
+            padding: 20px 0;
             text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            /* 如果你有真實的 LOGO 圖片，可以用 <img> 標籤代替文字 */
+        }
+
+        /* --- 主體區塊 --- */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* --- 橫向滾輪列表 (核心部分) --- */
+        .scroller-wrapper {
+            width: 100%;
+            overflow-x: auto; /* 啟用橫向滾動 */
+            white-space: nowrap; /* 強制內容不換行 */
+            padding: 10px 0;
+            -webkit-overflow-scrolling: touch; /* 讓 iOS 滑動更順暢 */
+        }
+
+        /* 隱藏電腦版預設的醜醜滾動條 (選用) */
+        .scroller-wrapper::-webkit-scrollbar {
+            height: 6px;
+        }
+        .scroller-wrapper::-webkit-scrollbar-thumb {
+            background-color: #ddd;
+            border-radius: 3px;
+        }
+
+        /* 陪玩卡片 */
+        .player-card {
+            display: inline-block; /* 讓卡片橫向排列 */
+            width: 150px;
+            margin-right: 15px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            vertical-align: top;
+            cursor: pointer;
+        }
+
+        .player-card:active {
+            transform: scale(0.95);
+        }
+
+        .player-img {
+            width: 100%;
+            height: 150px;
+            background-color: #eee; /* 圖片載入前的底色 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 12px;
+            /* 如果有真實圖片，需加入物件設定以防變形 */
+            /* object-fit: cover; */
+        }
+
+        .player-info {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .player-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* 文字過長顯示省略號 */
+        }
+
+        .player-tag {
+            font-size: 12px;
+            color: var(--primary-color);
+            background-color: #ffeaea;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* --- 彈出式視窗 (Modal) --- */
+        .modal {
+            display: none; /* 預設隱藏 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5); /* 半透明背景 */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            width: 85%;
             max-width: 400px;
-            width: 90%;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateY(-20px);
+            transition: transform 0.3s;
         }
 
-        h1 {
-            color: #2c3e50;
+        .modal.show .modal-content {
+            transform: translateY(0);
         }
 
-        p {
-            color: #7f8c8d;
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: #aaa;
+            cursor: pointer;
         }
 
-        .button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #3498db;
+        .modal-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #eee;
+            margin-bottom: 10px;
+            /* object-fit: cover; */
+        }
+
+        .modal-body {
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .info-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-top: 10px;
+        }
+
+        .contact-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 0;
+            background-color: var(--primary-color);
             color: white;
+            text-align: center;
             text-decoration: none;
-            border-radius: 5px;
-            transition: background 0.3s;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background 0.2s;
         }
 
-        .button:hover {
-            background-color: #2980b9;
+        .contact-btn:hover {
+            background-color: #ff5252;
         }
     </style>
 </head>
 <body>
 
+    <header class="header">
+        <div class="logo">PLAYMATE LOGO</div>
+    </header>
+
     <div class="container">
-        <h1>你好！</h1>
-        <p>這是我的第一個簡單網頁。</p>
-        <p>這是一個練習 HTML 和 CSS 的好開始。</p>
-        <a href="#" class="button" onclick="alert('你點了按鈕！')">點擊我</a>
+        <div class="section-title">熱門陪玩</div>
+
+        <div class="scroller-wrapper">
+
+            <div class="player-card" onclick="openModal('小雲', '溫柔體貼、愛聊天', 'Line: cloud123', 'https://via.placeholder.com/150')">
+                <div class="player-img">照片 1</div>
+                <div class="player-info">
+                    <div class="player-name">小雲</div>
+                    <span class="player-tag">溫柔甜美</span>
+                </div>
+            </div>
+
+            <div class="player-card" onclick="openModal('阿豪', '技術台、全能遊戲通', 'WeChat: hao_game', 'https://via.placeholder.com/150')">
+                <div class="player-img">照片 2</div>
+                <div class="player-info">
+                    <div class="player-name">阿豪</div>
+                    <span class="player-tag">技術大佬</span>
+                </div>
+            </div>
+
+            <div class="player-card" onclick="openModal('咪咪', '聲音好聽、會唱歌', 'IG: mimi_voice', 'https://via.placeholder.com/150')">
+                <div class="player-img">照片 3</div>
+                <div class="player-info">
+                    <div class="player-name">咪咪</div>
+                    <span class="player-tag">聲優女神</span>
+                </div>
+            </div>
+
+            <div class="player-card" onclick="openModal('Bear', '幽默風趣、不會冷場', 'Discord: Bear#1234', 'https://via.placeholder.com/150')">
+                <div class="player-img">照片 4</div>
+                <div class="player-info">
+                    <div class="player-name">Bear</div>
+                    <span class="player-tag">幽默風趣</span>
+                </div>
+            </div>
+
+        </div> </div> <div class="modal" id="playerModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            
+            <div class="modal-header">
+                <img src="" id="modalImg" alt="頭像">
+                <h2 id="modalName">陪玩名稱</h2>
+            </div>
+            
+            <div class="modal-body">
+                <div class="info-title">關於我/性格：</div>
+                <p id="modalDesc">這裡是性格介紹內容...</p>
+                
+                <div class="info-title">聯絡方式：</div>
+                <p id="modalContact">這裡是聯絡資訊...</p>
+            </div>
+            
+            <a href="#" class="contact-btn">立即聯絡</a>
+        </div>
     </div>
+
+    <script>
+        const modal = document.getElementById('playerModal');
+        const modalName = document.getElementById('modalName');
+        const modalDesc = document.getElementById('modalDesc');
+        const modalContact = document.getElementById('modalContact');
+        const modalImg = document.getElementById('modalImg');
+
+        // 打開視窗的函式
+        function openModal(name, desc, contact, imgUrl) {
+            modalName.innerText = name;
+            modalDesc.innerText = desc;
+            modalContact.innerText = contact;
+            modalImg.src = imgUrl; // 設定圖片網址
+
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; /* 防止底層捲動 */
+        }
+
+        // 關閉視窗的函式
+        function closeModal() {
+            modal.classList.remove('show');
+            document.body.style.overflow = ''; /* 恢復底層捲動 */
+        }
+
+        // 點擊視窗外部也可以關閉
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
 
 </body>
 </html>
