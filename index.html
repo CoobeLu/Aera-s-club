@@ -10,8 +10,8 @@
             --bg-color: #fcfcfd;
             --text-color: #444;
             --card-bg: #fff;
-            /* 修正 LOGO 背景色：設定為與圖片完全一致的黑色 */
-            --header-bg: #000000; 
+            /* 頂部欄位的黑色 (可以稍微帶灰，更有質感) */
+            --header-bg: #1a1a1a; 
         }
 
         html { overflow-y: scroll; }
@@ -24,7 +24,7 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- LOGO 區 (已放大) --- */
+        /* --- LOGO 區 --- */
         .header {
             width: 100%;
             background-color: var(--header-bg);
@@ -36,12 +36,15 @@
         }
 
         .logo-img {
-            /* --- 核心修改：LOGO 放大 --- */
-            height: 250px; /* 原為 70px */
+            /* --- 核心修改：LOGO 大幅放大 --- */
+            height: 150px; /* 原為 70px / 110px，現在放大到 150px */
             width: auto;
             object-fit: contain;
-            display: block; /* 修正對齊問題 */
+            display: block; 
             margin: 0 auto;
+            /* --- 核心修改：終極消除色差 --- */
+            /* 這個設定會把圖片中的黑色部分變透明，只留下白色文字 */
+            mix-blend-mode: screen; 
         }
 
         /* --- 關於我們 --- */
@@ -88,17 +91,18 @@
             border: 1px solid #eee;
         }
 
-        .player-card:hover { transform: translateY(-7px); }
+        .player-card:hover { transform: translateY(-7px); box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
 
         .player-img-container { width: 100%; height: 190px; background-color: #eee; }
         .player-img { width: 100%; height: 100%; object-fit: cover; }
 
         .player-info { padding: 18px; text-align: center; }
-        .player-name { font-size: 19px; font-weight: bold; margin-bottom: 10px; }
+        .player-name { font-size: 19px; font-weight: bold; margin-bottom: 10px; color: #333; }
         .player-tag {
             font-size: 12px; color: white;
             background: linear-gradient(135deg, #ff9e9e 0%, #ff8e8e 100%);
             padding: 4px 12px; border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(255,142,142,0.3);
         }
 
         /* --- 彈出視窗 --- */
@@ -108,7 +112,7 @@
             background-color: rgba(0,0,0,0.75);
             z-index: 1000; justify-content: center; align-items: center;
         }
-        .modal.show { display: flex; }
+        .modal.show { display: flex; animation: fadeIn 0.3s; }
 
         .modal-content {
             background-color: var(--card-bg);
@@ -118,19 +122,27 @@
             animation: popUp 0.3s ease-out;
         }
 
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popUp { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .close-modal { position: absolute; top: 18px; right: 22px; font-size: 30px; color: #ccc; cursor: pointer; }
-        .modal-header img { width: 110px; height: 110px; border-radius: 50%; border: 4px solid var(--primary-color); object-fit: cover; margin-bottom: 20px; }
+        .modal-header img {
+            width: 110px; height: 110px; border-radius: 50%;
+            border: 4px solid var(--primary-color); object-fit: cover;
+            margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
         .modal-body { text-align: left; margin-bottom: 30px; }
-        .info-label { font-weight: bold; color: var(--primary-color); margin-top: 18px; display: block; }
-        .info-content { font-size: 15px; line-height: 1.7; color: #555; margin-top: 5px; }
+        .info-label { font-weight: bold; color: var(--primary-color); margin-top: 18px; display: block; font-size: 16px; }
+        .info-content { font-size: 15px; line-height: 1.7; color: #555; margin: 5px 0 0 0; }
         .contact-btn {
             display: block; width: 100%; padding: 16px 0;
             background: linear-gradient(135deg, #ff8e8e 0%, #ff6b6b 100%);
             color: white; text-align: center; text-decoration: none;
-            border-radius: 14px; font-weight: bold;
+            border-radius: 14px; font-weight: bold; font-size: 16px;
+            box-shadow: 0 5px 15px rgba(255,107,107,0.4);
+            transition: transform 0.2s;
         }
+        .contact-btn:hover { transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -172,7 +184,7 @@
             <span class="close-modal" onclick="closeModal()">×</span>
             <div class="modal-header">
                 <img src="" id="modalImg" alt="頭像">
-                <h2 id="modalName" style="margin: 0;"></h2>
+                <h2 id="modalName" style="margin: 0; font-size: 24px;"></h2>
             </div>
             <div class="modal-body">
                 <span class="info-label">關於我 / 性格：</span>
