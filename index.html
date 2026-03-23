@@ -6,10 +6,15 @@
     <title>我們的陪玩小店</title>
     <style>
         :root {
-            --primary-color: #ff8e8e; /* 溫暖的粉橘色 */
-            --bg-color: #fcfcfc;
+            --primary-color: #ff8e8e;
+            --bg-color: #f4f4f7; /* 稍微加深一點點底色，讓白色區塊更明顯 */
             --text-color: #444;
             --card-bg: #fff;
+        }
+
+        /* 修正抖動：讓網頁永遠預留捲軸空間，或是平滑鎖定 */
+        html {
+            overflow-y: scroll; 
         }
 
         body {
@@ -20,23 +25,26 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- LOGO 區 --- */
+        /* --- LOGO 區 (修正白色 LOGO 看不見的問題) --- */
         .header {
             width: 100%;
-            background-color: var(--card-bg);
-            padding: 20px 0;
+            /* 這裡稍微加深一點背景色，或者使用深色背景 */
+            background-color: #2c3e50; /* 如果 LOGO 是白的，改用深藍色底會非常高級 */
+            padding: 25px 0;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             position: sticky; top: 0; z-index: 100;
         }
 
         .logo-img {
-            height: 80px; /* 調整 LOGO 大小 */
+            height: 70px;
             width: auto;
             object-fit: contain;
+            /* 也可以幫圖片加一點發光，防止在深色底也不清楚 */
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
         }
 
-        /* --- 關於我們介紹區 --- */
+        /* --- 關於我們 --- */
         .about-section {
             width: 90%; max-width: 600px;
             margin: 30px 20px;
@@ -44,102 +52,68 @@
             background: #fff;
             border-radius: 20px;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            border: 1px solid #eee;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
 
-        .about-title {
-            font-size: 22px; font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 12px;
-        }
+        .about-title { font-size: 22px; font-weight: bold; color: var(--primary-color); margin-bottom: 12px; }
+        .about-text { font-size: 15px; line-height: 1.8; color: #666; }
 
-        .about-text {
-            font-size: 15px; line-height: 1.8; color: #777;
-        }
+        /* --- 陪玩卡片區塊 --- */
+        .container { width: 100%; max-width: 1200px; padding: 0 20px 50px 20px; box-sizing: border-box; }
+        .section-title { font-size: 18px; margin-bottom: 20px; padding-left: 10px; border-left: 5px solid var(--primary-color); font-weight: bold; }
 
-        /* --- 主體區塊 --- */
-        .container {
-            width: 100%; max-width: 1200px;
-            padding: 0 20px 50px 20px;
-            box-sizing: border-box;
-        }
-
-        .section-title {
-            font-size: 18px; margin-bottom: 20px;
-            padding-left: 10px;
-            border-left: 5px solid var(--primary-color);
-            font-weight: bold;
-        }
-
-        /* --- 橫向滾輪列表 --- */
         .scroller-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 15px 0;
+            width: 100%; overflow-x: auto; white-space: nowrap; padding: 15px 0;
             -webkit-overflow-scrolling: touch;
         }
 
-        .scroller-wrapper::-webkit-scrollbar { height: 4px; }
-        .scroller-wrapper::-webkit-scrollbar-thumb { background-color: #eee; border-radius: 10px; }
-
         .player-card {
-            display: inline-block;
-            width: 180px; /* 稍微加大卡片 */
-            margin-right: 20px;
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            vertical-align: top;
-            cursor: pointer;
-            border: 1px solid #f0f0f0;
+            display: inline-block; width: 180px; margin-right: 20px;
+            background-color: var(--card-bg); border-radius: 15px;
+            overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease; vertical-align: top; cursor: pointer;
         }
-
         .player-card:hover { transform: translateY(-5px); }
 
-        .player-img-container {
-            width: 100%; height: 180px;
-            background-color: #f9f9f9;
-            overflow: hidden;
-        }
-
-        .player-img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-        }
+        .player-img-container { width: 100%; height: 180px; background-color: #eee; }
+        .player-img { width: 100%; height: 100%; object-fit: cover; }
 
         .player-info { padding: 15px; text-align: center; }
-        .player-name { font-size: 18px; font-weight: bold; margin-bottom: 8px; color: #333; }
+        .player-name { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
         .player-tag { font-size: 12px; color: white; background-color: var(--primary-color); padding: 3px 10px; border-radius: 20px; }
 
-        /* --- 彈出式視窗 --- */
+        /* --- 彈出視窗 (修正抖動邏輯) --- */
         .modal {
             display: none; position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0,0,0,0.7);
             z-index: 1000; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.3s;
         }
-        .modal.show { display: flex; opacity: 1; }
+        .modal.show { display: flex; }
+
         .modal-content {
             background-color: var(--card-bg);
             width: 85%; max-width: 350px;
             border-radius: 25px; padding: 30px;
             position: relative; text-align: center;
+            animation: popUp 0.3s ease-out; /* 增加平滑動畫 */
         }
+
+        @keyframes popUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 28px; color: #ccc; cursor: pointer; }
         .modal-header img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary-color); object-fit: cover; margin-bottom: 15px; }
         .modal-body { text-align: left; margin-bottom: 25px; }
         .info-label { font-weight: bold; color: var(--primary-color); margin-top: 15px; display: block; }
-        .info-content { font-size: 15px; line-height: 1.6; color: #555; margin: 5px 0; }
+        .info-content { font-size: 15px; line-height: 1.6; color: #555; }
         .contact-btn {
             display: block; width: 100%; padding: 15px 0;
             background: linear-gradient(135deg, #ff8e8e 0%, #ff6b6b 100%);
             color: white; text-align: center; text-decoration: none;
-            border-radius: 12px; font-weight: bold; box-shadow: 0 4px 10px rgba(255,107,107,0.3);
+            border-radius: 12px; font-weight: bold;
         }
     </style>
 </head>
@@ -150,50 +124,30 @@
     </header>
 
     <div class="about-section">
-        <div class="about-title">✨ 關於我們 ✨</div>
+        <div class="about-title">✨ 關於我們的祕密基地 ✨</div>
         <div class="about-text">
-            歡迎來到我們的祕密基地 ✨。在這裡，我們不只陪你打遊戲，<br>
-            更想陪你度過每一個心情起伏。不論是想在戰場上大殺四方，<br>
-            還是只想找個聲音好聽的人聊聊日常，提拉米蘇、亞伯與稀飯都在這裡等著你。<br>
+            在這裡，我們不只陪你打遊戲，更想陪你度過每一個心情起伏。<br>
+            不論是想在戰場上大殺四方，還是只想找個聲音好聽的人聊聊日常，<br>
+            <strong>提拉米蘇、亞伯與稀飯</strong> 都在這裡等著你。<br>
             讓陪伴，成為你生活中最溫暖的日常。
         </div>
     </div>
 
     <div class="container">
         <div class="section-title">我們的陪玩夥伴</div>
-
         <div class="scroller-wrapper">
-
             <div class="player-card" onclick="openModal('提拉米蘇', '性格開朗、聲音甜美，擅長各種射擊遊戲。', 'Line ID: tira_123', 'tira.jpg')">
-                <div class="player-img-container">
-                    <img src="tira.jpg" class="player-img" alt="提拉米蘇">
-                </div>
-                <div class="player-info">
-                    <div class="player-name">提拉米蘇</div>
-                    <span class="player-tag">聲音可愛又純真無邪</span>
-                </div>
+                <div class="player-img-container"><img src="tira.jpg" class="player-img" alt="提拉米蘇" onerror="this.src='https://via.placeholder.com/180?text=Tiramisu'"></div>
+                <div class="player-info"><div class="player-name">提拉米蘇</div><span class="player-tag">活潑甜心</span></div>
             </div>
-
             <div class="player-card" onclick="openModal('亞伯', '冷靜技術流，專業帶飛，不論什麼局都能Carry。', 'Discord: Abel#999', 'abel.jpg')">
-                <div class="player-img-container">
-                    <img src="abel.jpg" class="player-img" alt="亞伯">
-                </div>
-                <div class="player-info">
-                    <div class="player-name">亞伯</div>
-                    <span class="player-tag">大佬陪你暢遊異世界</span>
-                </div>
+                <div class="player-img-container"><img src="abel.jpg" class="player-img" alt="亞伯" onerror="this.src='https://via.placeholder.com/180?text=Abel'"></div>
+                <div class="player-info"><div class="player-name">亞伯</div><span class="player-tag">技術大佬</span></div>
             </div>
-
             <div class="player-card" onclick="openModal('稀飯', '溫柔傾聽者，不管是心事還是遊戲都能陪你。', '微信: xifan_play', 'rice.jpg')">
-                <div class="player-img-container">
-                    <img src="rice.jpg" class="player-img" alt="稀飯">
-                </div>
-                <div class="player-info">
-                    <div class="player-name">稀飯</div>
-                    <span class="player-tag">療癒暖男，聲音性感</span>
-                </div>
+                <div class="player-img-container"><img src="rice.jpg" class="player-img" alt="稀飯" onerror="this.src='https://via.placeholder.com/180?text=Rice'"></div>
+                <div class="player-info"><div class="player-name">稀飯</div><span class="player-tag">療癒暖男</span></div>
             </div>
-
         </div>
     </div>
 
@@ -207,7 +161,6 @@
             <div class="modal-body">
                 <span class="info-label">關於我 / 性格：</span>
                 <p id="modalDesc" class="info-content"></p>
-                
                 <span class="info-label">聯絡方式：</span>
                 <p id="modalContact" class="info-content"></p>
             </div>
@@ -227,23 +180,19 @@
             modalDesc.innerText = desc;
             modalContact.innerText = contact;
             modalImg.src = imgUrl; 
-            
-            // 如果圖片沒上傳，顯示備用圖
-            modalImg.onerror = function() { this.src = 'https://via.placeholder.com/150?text=No+Photo'; };
-
             modal.classList.add('show');
-            document.body.style.overflow = 'hidden';
+            // 修正抖動：改用 overflow 隱藏但不位移
+            document.documentElement.style.overflow = 'hidden';
         }
 
         function closeModal() {
             modal.classList.remove('show');
-            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
         }
 
         window.onclick = function(event) {
             if (event.target == modal) closeModal();
         }
     </script>
-
 </body>
 </html>
