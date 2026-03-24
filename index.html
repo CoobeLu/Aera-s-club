@@ -45,7 +45,7 @@
         /* --- 關於我們 --- */
         .about-section {
             width: 90%; max-width: 650px;
-            margin: 40px 20px;
+            margin: 40px 20px 20px 20px;
             padding: 30px;
             background: #fff;
             border-radius: 20px;
@@ -56,8 +56,42 @@
         .about-title { font-size: 24px; font-weight: bold; color: var(--primary-color); margin-bottom: 15px; }
         .about-text { font-size: 16px; line-height: 1.9; color: #666; }
 
-        /* --- 陪玩卡片區塊 --- */
-        .container { width: 100%; max-width: 1200px; padding: 0 20px 60px 20px; box-sizing: border-box; }
+        /* --- 價目表區塊 (新增) --- */
+        .price-section {
+            width: 90%; max-width: 650px;
+            margin: 20px auto;
+            padding: 25px;
+            background: #fffafb; /* 淡淡的粉色背景 */
+            border-radius: 20px;
+            border: 1px dashed var(--primary-color);
+            text-align: center;
+        }
+
+        .price-title { font-size: 20px; font-weight: bold; color: var(--primary-color); margin-bottom: 10px; }
+        .price-intro { font-size: 14px; color: #888; margin-bottom: 20px; }
+
+        .price-table {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .price-item {
+            background: #fff;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .price-label { font-size: 16px; font-weight: bold; color: #555; display: block; }
+        .price-value { font-size: 22px; font-weight: 800; color: var(--primary-color); margin-top: 5px; display: block; }
+
+        /* --- 夥伴列表 --- */
+        .container { width: 100%; max-width: 1200px; padding: 20px 20px 60px 20px; box-sizing: border-box; }
         .section-title { font-size: 20px; margin-bottom: 25px; padding-left: 12px; border-left: 6px solid var(--primary-color); font-weight: bold; }
 
         .scroller-wrapper { width: 100%; overflow-x: auto; white-space: nowrap; padding: 15px 0; -webkit-overflow-scrolling: touch; }
@@ -111,6 +145,21 @@
         </div>
     </div>
 
+    <div class="price-section">
+        <div class="price-title">💎 服務價目表</div>
+        <p class="price-intro">我們提供多樣化的陪玩選擇，給您最優質的陪伴時光</p>
+        <div class="price-table">
+            <div class="price-item">
+                <span class="price-label">🌸 頭牌藝妓</span>
+                <span class="price-value">500c / 小時</span>
+            </div>
+            <div class="price-item">
+                <span class="price-label">💼 一般職員</span>
+                <span class="price-value">150c / 小時</span>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="section-title">我們的陪玩夥伴</div>
         <div class="scroller-wrapper">
@@ -121,7 +170,7 @@
                 </div>
                 <div class="player-info">
                     <div class="player-name">澤謙老闆娘</div>
-                    <span class="player-tag">王牌藝妓：打牌&牽線</span>
+                    <span class="player-tag">王牌藝妓：打牌牽線全能</span>
                 </div>
             </div>
 
@@ -131,7 +180,7 @@
                 </div>
                 <div class="player-info">
                     <div class="player-name">提拉米蘇</div>
-                    <span class="player-tag">活潑甜心：純真可愛</span>
+                    <span class="player-tag">活潑甜心：聲音純真可愛</span>
                 </div>
             </div>
             
@@ -141,7 +190,7 @@
                 </div>
                 <div class="player-info">
                     <div class="player-name">亞伯</div>
-                    <span class="player-tag">技術大佬：專業帶飛</span>
+                    <span class="player-tag">技術大佬：專業帶飛穩贏</span>
                 </div>
             </div>
             
@@ -151,7 +200,7 @@
                 </div>
                 <div class="player-info">
                     <div class="player-name">稀飯</div>
-                    <span class="player-tag">療癒暖男：溫柔又性感</span>
+                    <span class="player-tag">療癒暖男：溫柔性感聲音</span>
                 </div>
             </div>
 
@@ -171,7 +220,7 @@
                 <span class="info-label">聯絡方式：</span>
                 <p id="modalContact" class="info-content"></p>
             </div>
-            <a href="#" class="contact-btn">聯絡RT的澤謙預約</a>
+            <a href="#" class="contact-btn">立即預約聯絡</a>
         </div>
     </div>
 
